@@ -13,9 +13,9 @@ class Truck:
 
 
     def load_package(self,package):
-        """ Package an object load on to the truck"""
         if len(self.packages) < self.max_load_capacity:
             self.packages.append(package)
+            package.package_departure = self.current_time
         else:
             print("The truck is full")
 

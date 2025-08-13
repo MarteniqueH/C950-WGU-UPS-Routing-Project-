@@ -10,6 +10,7 @@ class Package:
         self.package_note = package_note
         self.package_status = package_status
         self.package_delivery = None
+        self.package_departure = None
 
 
     def __str__(self):

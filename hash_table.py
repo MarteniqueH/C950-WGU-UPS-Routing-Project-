@@ -26,12 +26,12 @@ class HashTable:
         #Determinse the index for the key using that hash function
         index = self.hash(key)       #If the bucket is located and has nothing in it
         if self.bucket[index] is None:
-            return  "Package Cannot Be Located"
+            return None
         #The program will loop through all the key-value pairs. If it finds a match, return the associated values
         for stored_key, stored_value in self.bucket[index]:
             if stored_key == key:
                 return stored_value
-        return "Package Cannot be Located"
+        return None
 
     def search (self,key):
         return self.lookup(key)
