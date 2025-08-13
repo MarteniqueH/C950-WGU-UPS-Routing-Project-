@@ -1,16 +1,18 @@
 #Student ID: 011509876
 #Martenique Harmon
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from hash_table import HashTable
 from package import Package
 from routing import greedy_algorithm
 from truck import Truck
+import logging
+
 
 #Importing a Distance CSV file
 with open("distance.csv") as distance_file:
-    distance_CSV = list(csv.reader(distance_file))
+    distance_CSV = list(csv.reader(distance_file))[1:]
 
 #Importing an Address CSV file
 with open("Addresses.csv") as address_file:
@@ -24,23 +26,32 @@ def loading_packages():
         package_data = csv.reader(package_file)
         next (package_data)
         for row in package_data:
-            package_id = int(row[0])
-            package_address = row[1]
-            package_city = row[2]
-            package_state = row[3]
-            package_zip = row[4]
-            package_delivery_deadline = row[5]
-            package_weight = row[6]
-            package_note = row[7] if len(row) > 7 else ""
-            package_status = "At Hub"
+            if len (row) < 7:
+                print(f"Skipping malformed row: {row}")
+                continue
+            try:
+                package_id = int(row[0])
+                package_address = row[1]
+                package_city = row[2]
+                package_state = row[3]
+                package_zip = row[4]
+                package_delivery_deadline = row[5]
+                package_weight = row[6]
+                package_note = row[7] if len(row) > 7 else ""
+                package_status = "At Hub"
 
-            package_object = Package(package_id,package_address,package_city,package_state,package_zip,package_delivery_deadline,package_weight,package_note,package_status)
+                package_object = Package(package_id,package_address,package_city,package_state,package_zip,package_delivery_deadline,package_weight,package_note,package_status)
 
-            package_table.insert(package_id, package_object)
+                package_table.insert(package_id, package_object)
+            except Exception as e:
+                print(f"Failed to process row {row}: {e}")
 
     return package_table
 
+
+
 def main():
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     package_table = loading_packages()
 
 
@@ -50,36 +61,61 @@ def main():
     truck_three = Truck(starting_time=datetime.strptime("10:00", "%H:%M"))
 
     # Manually loading each truck with packages based on package IDs
-    Truck_one_packages = [1, 2, 4, 5, 7, 8, 9, 10, 11, 13, 29, 30, 31, 34, 37, 40]
-    Truck_two_packages = [3, 15, 17, 18, 19, 20, 21, 22, 23, 24, 26, 27, 33, 35, 36, 38]
-    Truck_three_packages = [6, 12, 14, 16, 25, 28, 32, 39]
+    truck_one_packages = [1,2,7,10,11,13,14,15,16,19,20,29,30,31,34,37]
+    truck_two_packages = [4,3,8,17,18,21,22,23,24,26,27,33,35,36,38,40]
+    truck_three_packages = [6,5,9,12,25,28,32,39]
 
     # Loading packages by the lookup function of the Hash table
-    for package_id in Truck_one_packages:
+    for package_id in truck_one_packages:
         package = package_table.lookup(package_id)
-        if isinstance(package,Package):
+        if package is None:
+            print(f"Package ID {package_id} is not found in hash table.")
+        else:
             truck_one.load_package(package)
-        else:
-            print(f"Package Id {package_id} is not found")
-    for package_id in Truck_two_packages:
+            print(f"Package Id {package_id} loaded onto Truck one")
+    for package_id in truck_two_packages:
         package = package_table.lookup(package_id)
-        if isinstance(package,Package):
+        if package is None:
+            print(f"Package ID {package_id} is not found in hash table.")
+        else:
             truck_two.load_package(package)
-        else:
-            print(f"Package Id {package_id} is not found")
-    for package_id in Truck_three_packages:
+            print(f"Package Id {package_id} loaded onto Truck Two")
+    for package_id in truck_three_packages:
         package = package_table.lookup(package_id)
-        if isinstance(package,Package):
-            truck_three.load_package(package)
+        if package is None:
+            print(f"Package ID {package_id} is not found in hash table.")
         else:
-            print(f"Package Id {package_id} is not found")
+            truck_three.load_package(package)
+            print(f"Package Id {package_id} loaded onto Truck Three.")
 
     print("Deliveries for Truck one have begun")
-    greedy_algorithm(truck_one,distance_CSV,address_csv)
+    try:
+        greedy_algorithm(truck_one, distance_CSV, address_csv)
+    except Exception as e:
+        print(f"Truck One delivery failed: {e}")
+
     print("Deliveries for Truck two have begun")
-    greedy_algorithm(truck_two,distance_CSV,address_csv)
-    print("Deliveries for Truck three has begun ")
-    greedy_algorithm(truck_three,distance_CSV,address_csv)
+    try:
+        greedy_algorithm(truck_two, distance_CSV, address_csv)
+    except Exception as e:
+        print(f"Truck Two delivery failed: {e}")
+
+    print("Deliveries for Truck three have begun")
+    try:
+        greedy_algorithm(truck_three, distance_CSV, address_csv)
+    except Exception as e:
+        print(f"Truck Three delivery failed: {e}")
+    print("All packages are Done")
+
+    total_mileage = (
+        truck_one.total_mileage +
+        truck_two.total_mileage +
+        truck_three.total_mileage
+    )
+    print(f"The total mileage for all trucks: {total_mileage:.2F}")
+    return truck_one,truck_two,truck_three, package_table
+    return truck_one,truck_two,truck_three, package_table
+
 
 if __name__ == "__main__":
     main()

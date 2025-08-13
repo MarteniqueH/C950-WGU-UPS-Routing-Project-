@@ -11,6 +11,7 @@ class Package:
         self.package_status = package_status
         self.package_delivery = None
 
+
     def __str__(self):
         details = [
             f"Package {self.package_id}: ",

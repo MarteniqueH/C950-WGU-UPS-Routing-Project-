@@ -1,10 +1,10 @@
 
-def distance_between(Address_one, Address_two, distance_data):
+def distance_between(Address_one_index, Address_two_index, distance_data):
     try:
-        distances = distance_data[Address_one][Address_two].strip()
+        distances = distance_data[Address_one_index][Address_two_index].strip()
         if distances == "":
-            distances = distance_data[Address_two][Address_one].strip()
+            distances = distance_data[Address_two_index][Address_one_index].strip()
         return float(distances)
     except (IndexError, ValueError) as e:
-        print(f"Error getting distance between {Address_one} and {Address_two}: {e}")
+        print(f"Error getting distance between {Address_one_index} and {Address_two_index}: {e}")
         return 0.0
