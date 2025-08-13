@@ -170,6 +170,5 @@ def selection_menu(package_table, trucks):
         else:
             print("Invalid selection, Please Try again")
 if __name__ == "__main__":
-
     truck_one,truck_two,truck_three,package_table = main()
     selection_menu(package_table,(truck_one,truck_two,truck_three))
