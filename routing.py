@@ -9,7 +9,6 @@ def greedy_algorithm(truck,distance_data,address_data):
         urgent_packages = [p for p in truck.packages if p.package_delivery_deadline != "EOD"]
         non_urgent_packages = [p for p in truck.packages if p.package_delivery_deadline == "EOD"]
         package_consideration = urgent_packages if urgent_packages else non_urgent_packages
-
         current_address_index = next(
             (i for i, row in enumerate(address_data)
              if row[1].strip() == truck.current_location.strip()),
