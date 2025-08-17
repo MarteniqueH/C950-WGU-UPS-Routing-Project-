@@ -1,4 +1,5 @@
 class Package:
+    #Initialize new package with information
     def __init__(self,package_id,package_address,package_city,package_state,package_zip,package_delivery_deadline,package_weight, package_note, package_status):
         self.package_id = package_id
         self.package_address = package_address
@@ -11,8 +12,10 @@ class Package:
         self.package_status = package_status
         self.package_delivery = None
         self.package_departure = None
+        self.truck_number = None
+        
 
-
+#Returns formatted string of all package information
     def __str__(self):
         details = [
             f"Package {self.package_id}: ",

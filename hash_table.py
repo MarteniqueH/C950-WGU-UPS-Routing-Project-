@@ -23,7 +23,7 @@ class HashTable:
         self.bucket[index].append((key,value))
     #Creating Look up function
     def lookup(self, key):
-        #Determinse the index for the key using that hash function
+    #Determinse the index for the key using that hash function
         index = self.hash(key)       #If the bucket is located and has nothing in it
         if self.bucket[index] is None:
             return None

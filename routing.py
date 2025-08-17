@@ -1,7 +1,7 @@
 from datetime import timedelta
 from helper import distance_between
 
-
+#Implements greedy nearest neighbor algorithm for package delivery routing
 def greedy_algorithm(truck,distance_data,address_data):
     truck.current_location = "4001 South 700 East"
     while truck.packages:
@@ -16,20 +16,27 @@ def greedy_algorithm(truck,distance_data,address_data):
 
         next_package = None
         closest_distance = float('inf')
-
+#finds the nearest package
         for package in package_consideration:
+        #finds the address index for the package delivery address
             package_address_index = next(
                 (i for i, row in enumerate(address_data)
                  if row[1].strip() == package.package_address.strip()),
                 -1)
+        #clacuates distance if both addresses are found in the data
             if current_address_index != -1 and package_address_index != -1:
                 distance = distance_between(current_address_index, package_address_index, distance_data)
+            #updates the closest package if this one is closer
                 if distance < closest_distance:
                     closest_distance = distance
                     next_package = package
+            #Avoids a bad infinite looping problem
         if not next_package:
             print("No next package was found. The route for this truck ended early to avoid infinite looping")
             break
+
+    #The DELIVERY PROCESS BEGINS
+
         #Packages Delivery for each truck
         travel_distance = closest_distance
         truck.total_mileage += travel_distance
